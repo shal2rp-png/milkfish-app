@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#075985">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<title>Milkfish Hatcheries Water Monitor</title>
+<style>
+:root{--navy:#073763;--blue:#087fc1;--cyan:#39c5e8;--bg:#eef7fc;--ink:#123452;--muted:#617b91;--green:#16a765;--red:#d94848;--amber:#d99113;--card:#fff}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(180deg,#dff3ff,#f5fbff 36%,#edf6fb);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--ink)}
+header{background:linear-gradient(120deg,#063b68,#087fba);color:white;padding:18px max(18px,calc((100% - 1080px)/2));display:flex;align-items:center;justify-content:space-between;gap:12px;box-shadow:0 4px 18px #003b6125}
+.brand{display:flex;align-items:center;gap:10px}.drop{width:42px;height:42px;border-radius:15px;background:#ffffff24;display:grid;place-items:center;font-size:24px}.brand h1{font-size:21px;margin:0}.brand small{display:block;color:#d3efff;font-size:12px}.online{font-size:12px;display:flex;align-items:center;gap:6px}.dot{height:8px;width:8px;border-radius:50%;background:#43e58e;display:inline-block}
+main{max-width:1080px;margin:auto;padding:18px 16px 100px}.pond-banner{background:linear-gradient(120deg,#0c91ce,#075b9b);color:white;border-radius:20px;padding:18px;display:flex;justify-content:space-between;align-items:center;gap:12px;box-shadow:0 8px 22px #0a6c9b20}.pond-banner h2{margin:0 0 5px;font-size:20px}.pond-banner p{margin:0;color:#d9f3ff;font-size:13px}.fish{font-size:46px}
+.section-title{font-size:17px;margin:22px 2px 12px}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}.metric{background:var(--card);border:1px solid #d9eaf5;border-radius:18px;padding:16px;box-shadow:0 5px 16px #164d7010;min-width:0}.metric-top{display:flex;align-items:center;justify-content:space-between;gap:6px}.metric-name{font-size:13px;font-weight:700}.metric-icon{width:35px;height:35px;border-radius:12px;display:grid;place-items:center;font-size:19px}.ph .metric-icon{background:#d9efff;color:#087fc1}.amm .metric-icon{background:#eee4ff;color:#7854cf}.temp .metric-icon{background:#ffeddc;color:#e87918}.reading{font-size:30px;font-weight:750;letter-spacing:-1px;margin:10px 0 3px}.unit{font-size:13px;font-weight:600;letter-spacing:0}.range{font-size:12px;color:var(--muted)}.status{border-radius:99px;padding:5px 9px;font-size:11px;font-weight:750;background:#dff8e9;color:#087c48;white-space:nowrap}.status.warn{background:#fff0d0;color:#945e00}.status.bad{background:#ffe1e1;color:#a92727}.bar{height:8px;border-radius:99px;background:linear-gradient(90deg,#ed6666 0 17%,#ffbf4c 17% 34%,#d9df49 34% 48%,#28c889 48% 66%,#47c9e8 66% 83%,#4389f5 83%);margin-top:14px;position:relative}.marker{position:absolute;top:-4px;left:50%;width:4px;height:16px;background:#123452;border:1px solid white;border-radius:4px}
+.good-card{margin-top:14px;background:white;border:1px solid #dcecf5;border-radius:17px;padding:15px;display:flex;align-items:center;gap:12px}.leaf{font-size:26px}.good-card strong{display:block}.good-card small{color:var(--muted)}.good-text{color:var(--green);font-weight:800;margin-top:3px}
+.panel{margin-top:18px;background:white;border:1px solid #dcecf5;border-radius:18px;padding:16px;box-shadow:0 5px 16px #164d700a}.panel-head{display:flex;justify-content:space-between;align-items:center;gap:8px}.panel h3{font-size:16px;margin:0}.subtle{font-size:12px;color:var(--muted)}.chart{width:100%;height:190px;margin-top:10px}.chart svg{width:100%;height:100%;overflow:visible}.chart .gridline{stroke:#e5eef5;stroke-width:1}.chart .line{fill:none;stroke:#1187ca;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}.chart .area{fill:#bce9ff;opacity:.35}.chart-labels{display:flex;justify-content:space-between;color:var(--muted);font-size:11px}
+.tabs{position:fixed;bottom:0;left:0;right:0;z-index:5;background:#073b68;color:#c5e7fa;display:flex;justify-content:center;box-shadow:0 -5px 20px #00304b20;padding:7px 8px calc(7px + env(safe-area-inset-bottom))}.tab{background:transparent;border:0;color:inherit;font:inherit;min-width:65px;max-width:150px;flex:1;padding:7px 4px;border-radius:12px;cursor:pointer;font-size:11px}.tab span{display:block;font-size:20px;margin-bottom:2px}.tab.active{background:#0d6595;color:white}
+.page{display:none}.page.active{display:block}.alert{border-radius:15px;padding:14px;margin-top:12px;border:1px solid #e1edf4;background:#fff}.alert h4{margin:0 0 5px;font-size:14px}.alert p{margin:0;font-size:12px;line-height:1.5;color:#58738a}.alert.warning{background:#fff9eb;border-color:#f4dfad}.alert.danger{background:#fff1f1;border-color:#f2cccc}.alert.info{background:#eff8ff;border-color:#c9e6fa}
+label{display:block;font-size:13px;font-weight:650;margin:14px 0 6px}input{width:100%;padding:11px 12px;border:1px solid #cbdfea;border-radius:10px;font:inherit;background:white;color:var(--ink)}.setting-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.btn{border:0;border-radius:11px;background:#087fc1;color:white;padding:11px 14px;font-weight:700;cursor:pointer;margin-top:14px}.btn.secondary{background:#e2f2fc;color:#075985}.switchrow{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 0}.switchrow input{width:22px;height:22px;accent-color:#087fc1}.notice{font-size:12px;line-height:1.55;color:#58738a;background:#f1f8fc;border-radius:12px;padding:12px;margin-top:12px}.empty{padding:24px;text-align:center;color:var(--muted)}
+@media(max-width:700px){header{padding:15px 16px}.grid{grid-template-columns:1fr}.metric{padding:14px}.reading{font-size:28px}.pond-banner{padding:15px}.fish{font-size:36px}.setting-grid{grid-template-columns:1fr 1fr}.chart{height:160px}}
+</style>
+</head>
+<body>
+<header><div class="brand"><div class="drop">💧</div><div><h1>Milkfish Hatcheries Water Monitor</h1><small>pHAT Levels · Water quality monitoring</small></div></div><div class="online"><i class="dot" id="connectionDot" style="background:#fbbf24"></i><span id="connectionText">Not connected</span></div></header>
+<main>
+<section class="page active" id="home">
+<div class="pond-banner"><div><h2 id="pondHeading">Hatchery 1</h2><p>Milkfish (<i>Chanos chanos</i>) · Hatchery water quality overview</p></div><div class="fish">🐟</div></div>
+<h3 class="section-title">Current readings</h3>
+<div class="grid">
+<div class="metric ph"><div class="metric-top"><div class="metric-icon">💧</div><span class="status warn" id="phStatus">Waiting</span></div><div class="metric-name">pH Level</div><div class="reading"><span id="phValue">—</span></div><div class="range">Target range: <span id="phRangeText">6.5–8.5</span></div><div class="bar"><i class="marker" id="phMarker" style="left:48%"></i></div></div>
+<div class="metric amm"><div class="metric-top"><div class="metric-icon">⚛️</div><span class="status warn" id="ammStatus">Waiting</span></div><div class="metric-name">Ammonia</div><div class="reading"><span id="ammValue">—</span> <span class="unit">mg/L</span></div><div class="range">Target max: <span id="ammRangeText">0.50 mg/L</span></div><div class="bar"><i class="marker" id="ammMarker" style="left:24%"></i></div></div>
+<div class="metric temp"><div class="metric-top"><div class="metric-icon">🌡️</div><span class="status warn" id="tempStatus">Waiting</span></div><div class="metric-name">Temperature</div><div class="reading"><span id="tempValue">—</span> <span class="unit">°C</span></div><div class="range">Target range: <span id="tempRangeText">26–32 °C</span></div><div class="bar"><i class="marker" id="tempMarker" style="left:48%"></i></div></div>
+</div>
+<div class="good-card"><div class="leaf">🌿</div><div><strong>Overall water quality</strong><div class="good-text" id="overallText" style="color:#945e00">Waiting for sensor data</div><small id="lastUpdated">No sensor data received</small></div></div>
+<div class="panel"><div class="panel-head"><h3>Recent pH trend</h3><span class="subtle">Last 12 readings</span></div><div class="chart" id="homeChart"></div><div class="chart-labels"><span>Earlier</span><span>Latest</span></div></div>
+<div class="notice" id="modeNotice"><b>Actual Mode:</b> No sensor data is available yet. This app is not connected to an ESP32, so readings will remain blank until a real data connection is added.</div>
+</section>
+<section class="page" id="history">
+<div class="panel-head" style="margin:4px 2px 14px"><h2 style="margin:0;font-size:22px">Reading history</h2><span class="subtle" id="historyModeLabel">No data yet</span></div>
+<div class="panel"><div class="panel-head"><h3>pH level</h3><span class="status" id="histPh">7.4</span></div><div class="chart" id="phChart"></div><div class="chart-labels"><span>Earlier</span><span>Now</span></div></div>
+<div class="panel"><div class="panel-head"><h3>Ammonia (mg/L)</h3><span class="status" id="histAmm">0.12</span></div><div class="chart" id="ammChart"></div><div class="chart-labels"><span>Earlier</span><span>Now</span></div></div>
+<div class="panel"><div class="panel-head"><h3>Temperature (°C)</h3><span class="status" id="histTemp">27.8 °C</span></div><div class="chart" id="tempChart"></div><div class="chart-labels"><span>Earlier</span><span>Now</span></div></div>
+</section>
+<section class="page" id="alerts">
+<div class="panel-head" style="margin:4px 2px 14px"><h2 style="margin:0;font-size:22px">Alerts</h2><button class="btn secondary" style="margin:0" id="clearAlerts">Clear</button></div>
+<div id="alertList"></div>
+<div class="notice">Alerts are generated from the simulated values and the ranges configured in Settings. Confirm appropriate thresholds with an aquaculture specialist before using real pond data.</div>
+</section>
+<section class="page" id="settings">
+<h2 style="margin:4px 2px 14px;font-size:22px">Settings</h2>
+<div class="panel"><h3>Device Information</h3><label for="pondName">Device name</label><input id="pondName" value="Hatchery 1"><div class="firebase-auth panel" style="margin:12px 0;padding:12px"><h4 style="margin:0 0 8px">Firebase connection</h4><p class="subtle">Sign in with the Firebase Authentication account authorized to read hatchery data.</p><label for="firebaseEmail">Email</label><input id="firebaseEmail" type="email" autocomplete="username" placeholder="Firebase account email"><label for="firebasePassword">Password</label><input id="firebasePassword" type="password" autocomplete="current-password" placeholder="Firebase account password"><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px"><button class="btn" type="button" id="firebaseSignIn">Sign in to Firebase</button><button class="btn" type="button" id="firebaseSignOut" style="background:#64748b">Sign out</button></div><small id="firebaseAuthMessage" class="subtle" style="display:block;margin-top:8px">Not signed in. Live readings require authorized database access.</small></div><label>Reading mode</label><div class="switchrow"><div><b>Demo Mode</b><div class="subtle">Use simulated values to test the interface</div></div><input type="checkbox" id="simulate" aria-label="Enable demo mode"></div><div class="good-card" style="margin:0"><span>📡</span><div><strong id="deviceStatusTitle">Not connected</strong><small id="deviceStatusDetail">Waiting for an ESP32 data connection</small></div></div></div>
+<div class="panel"><h3>Water quality reference ranges</h3><div class="setting-grid"><div><label for="phMin">pH minimum</label><input id="phMin" type="number" min="0" max="14" step=".1" value="6.5"></div><div><label for="phMax">pH maximum</label><input id="phMax" type="number" min="0" max="14" step=".1" value="8.5"></div><div><label for="ammMax">Ammonia max (mg/L)</label><input id="ammMax" type="number" min="0" step=".01" value=".50"></div><div><label for="tempMin">Temp min (°C)</label><input id="tempMin" type="number" value="26" step=".1"></div><div><label for="tempMax">Temp max (°C)</label><input id="tempMax" type="number" value="32" step=".1"></div></div><button class="btn" id="saveSettings">Save settings</button><span id="saveMessage" class="subtle" style="margin-left:10px"></span></div>
+<div class="panel"><h3>Try sample readings</h3><p class="subtle">Manually set a sample to test the dashboard and alerts.</p><div class="setting-grid"><div><label for="testPh">pH</label><input id="testPh" type="number" min="0" max="14" step=".1" value="7.4"></div><div><label for="testAmm">Ammonia (mg/L)</label><input id="testAmm" type="number" min="0" step=".01" value=".12"></div><div><label for="testTemp">Temperature (°C)</label><input id="testTemp" type="number" step=".1" value="27.8"></div></div><button class="btn" id="applyReadings">Apply sample readings</button></div>
+<div class="notice">Ranges shown are editable demonstration settings, not a substitute for validated species-specific aquaculture guidance. Sensor calibration and field testing are required before making farming decisions.</div>
+</section>
+</main>
+<nav class="tabs" aria-label="Main navigation">
+<button class="tab active" data-page="home"><span>⌂</span>Home</button><button class="tab" data-page="history"><span>⌁</span>History</button><button class="tab" data-page="alerts"><span>♧</span>Alerts</button><button class="tab" data-page="settings"><span>⚙</span>Settings</button>
+</nav>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyAz51UrAdgLonSlPN74A_KDi3oiy6ypAR4",
+  authDomain: "milkfish-chanos-chanos-5cf0e.firebaseapp.com",
+  databaseURL: "https://milkfish-chanos-chanos-5cf0e-default-rtdb.firebaseio.com",
+  projectId: "milkfish-chanos-chanos-5cf0e",
+  storageBucket: "milkfish-chanos-chanos-5cf0e.firebasestorage.app",
+  messagingSenderId: "299472482872",
+  appId: "1:299472482872:web:389af34379fb467872eccd",
+  measurementId: "G-R1V0826NG8"
+};
+let firebaseApp=null, firebaseAuth=null, firebaseDb=null, firebaseLatestRef=null;
+let actualReadingAvailable=false;
+let actualReadingTimestamp=null;
+try {
+  firebaseApp = firebase.initializeApp(firebaseConfig);
+  firebaseAuth = firebase.auth();
+  firebaseDb = firebase.database();
+  firebaseLatestRef = firebaseDb.ref("hatcheries/hatchery1/latest");
+} catch (error) {
+  console.error("Firebase initialization failed", error);
+}
+function showFirebaseMessage(message, isError=false) {
+  const el=document.getElementById("firebaseAuthMessage");
+  if(el){el.textContent=message;el.style.color=isError?"#b91c1c":"";}
+}
+function stopActualReadings() {
+  if(firebaseLatestRef) firebaseLatestRef.off();
+}
+function startActualReadings(user) {
+  if(!firebaseLatestRef || !user) return;
+  stopActualReadings();
+  firebaseLatestRef.on("value", snapshot => {
+    const data=snapshot.val();
+    if(!data || data.valid !== true ||
+       !Number.isFinite(Number(data.ph)) ||
+       !Number.isFinite(Number(data.temperature)) ||
+       !Number.isFinite(Number(data.ammonia))) {
+      actualReadingAvailable=false;
+      if(!simulate) {
+        readings={ph:null,amm:null,temp:null};
+        lastUpdated=null;
+        render();
+      }
+      showFirebaseMessage("Signed in, but no valid sensor reading is available at hatcheries/hatchery1/latest.");
+      return;
+    }
+    actualReadingAvailable=true;
+    actualReadingTimestamp=data.timestamp || Date.now();
+    if(!simulate) {
+      readings={ph:Number(data.ph),temp:Number(data.temperature),amm:Number(data.ammonia)};
+      lastUpdated=typeof actualReadingTimestamp==="number" ? new Date(actualReadingTimestamp).toLocaleTimeString([], {hour:"2-digit",minute:"2-digit",second:"2-digit"}) : String(actualReadingTimestamp);
+      for(const k of Object.keys(history)) {
+        const v=readings[k];
+        history[k].push(v);
+        if(history[k].length>12) history[k].shift();
+      }
+      render();
+    }
+    $("connectionText").textContent="Firebase connected";
+    $("connectionDot").style.background="#43e58e";
+    $("deviceStatusTitle").textContent=data.deviceConnected===true?"ESP32 connected":"Firebase connected";
+    $("deviceStatusDetail").textContent="Latest valid sensor reading received";
+    showFirebaseMessage("Signed in. Receiving live readings from Hatchery 1.");
+  }, error => {
+    $("connectionText").textContent="Access denied";
+    $("connectionDot").style.background="#d94848";
+    $("deviceStatusTitle").textContent="Firebase access denied";
+    $("deviceStatusDetail").textContent="Check authenticated Realtime Database rules.";
+    showFirebaseMessage("Firebase read failed: "+error.message+" Keep database rules private; authorize this signed-in user.", true);
+  });
+}
+if(firebaseAuth) {
+  firebaseAuth.onAuthStateChanged(user => {
+    if(user) {
+      showFirebaseMessage("Signed in as "+(user.email||"Firebase user")+". Checking hatchery data…");
+      startActualReadings(user);
+    } else {
+      stopActualReadings();
+      $("connectionText").textContent="Not connected";
+      $("connectionDot").style.background="#fbbf24";
+      if(!simulate) {
+        actualReadingAvailable=false;
+        readings={ph:null,amm:null,temp:null};
+        render();
+      }
+      showFirebaseMessage("Not signed in. Sign in with your Firebase Authentication account to read live data.");
+    }
+  });
+  document.getElementById("firebaseSignIn").addEventListener("click", async () => {
+    const email=document.getElementById("firebaseEmail").value.trim();
+    const password=document.getElementById("firebasePassword").value;
+    if(!email || !password) {showFirebaseMessage("Enter your Firebase account email and password.",true);return;}
+    try {await firebaseAuth.signInWithEmailAndPassword(email,password);}
+    catch(error) {showFirebaseMessage("Sign-in failed: "+error.message,true);}
+  });
+  document.getElementById("firebaseSignOut").addEventListener("click", async () => {
+    try {await firebaseAuth.signOut();}
+    catch(error) {showFirebaseMessage("Sign-out failed: "+error.message,true);}
+  });
+}
+</script>
+
+<script>
+const $=id=>document.getElementById(id);
+const STORE_KEY='phatLevelsSettingsV2';
+let readings={ph:null,amm:null,temp:null};
+let history={ph:[],amm:[],temp:[]}, alerts=[];
+let ranges={phMin:6.5,phMax:8.5,ammMax:.5,tempMin:26,tempMax:32};
+let simulate=false, lastUpdated=null;
+function saveState(){
+  try{localStorage.setItem(STORE_KEY,JSON.stringify({pondName:$('pondName').value||'Hatchery 1',ranges,simulate,readings:simulate?readings:null,history:simulate?history:null,lastUpdated:simulate?lastUpdated:null}));}catch(e){}
+}
+function loadState(){
+  try{const s=JSON.parse(localStorage.getItem(STORE_KEY)||'null');if(!s)return;
+    if(s.pondName)$('pondName').value=(/^pond\s*1$/i.test(s.pondName.trim())?'Hatchery 1':s.pondName);
+    if(s.ranges)ranges={...ranges,...s.ranges};
+    simulate=!!s.simulate;
+    if(simulate&&s.readings&&s.history){readings=s.readings;history=s.history;lastUpdated=s.lastUpdated||null;}
+  }catch(e){}
+  $('simulate').checked=simulate;
+  $('phMin').value=ranges.phMin;$('phMax').value=ranges.phMax;$('ammMax').value=ranges.ammMax;$('tempMin').value=ranges.tempMin;$('tempMax').value=ranges.tempMax;
+  $('pondHeading').textContent=$('pondName').value.trim()||'Hatchery 1';
+}
+function status(id,kind,label){let el=$(id);el.className='status';if(kind==='bad')el.classList.add('bad');else if(kind==='warn')el.classList.add('warn');el.textContent=label|| (kind==='bad'?'Out of range':kind==='warn'?'Waiting':'Normal')}
+function chartHTML(values,color='#1187ca'){if(!values||values.length<2)return '<div class="empty">No readings available yet.</div>';let w=500,h=170,p=12,min=Math.min(...values),max=Math.max(...values);if(max-min<.001){max+=1;min-=1}let pts=values.map((v,i)=>`${p+i*(w-2*p)/(values.length-1)},${h-p-(v-min)/(max-min)*(h-2*p)}`).join(' ');let first=pts.split(' ')[0].split(','),last=pts.split(' ').at(-1).split(',');let area=`${first[0]},${h-p} ${pts} ${last[0]},${h-p}`;return `<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="Reading trend chart"><line class="gridline" x1="0" y1="25" x2="${w}" y2="25"/><line class="gridline" x1="0" y1="65" x2="${w}" y2="65"/><line class="gridline" x1="0" y1="105" x2="${w}" y2="105"/><line class="gridline" x1="0" y1="145" x2="${w}" y2="145"/><polygon class="area" points="${area}"/><polyline class="line" style="stroke:${color}" points="${pts}"/></svg>`}
+function renderCharts(){$('homeChart').innerHTML=chartHTML(history.ph);$('phChart').innerHTML=chartHTML(history.ph,'#1187ca');$('ammChart').innerHTML=chartHTML(history.amm,'#8562d7');$('tempChart').innerHTML=chartHTML(history.temp,'#ed8a2b')}
+function renderAlerts(){let box=$('alertList');if(!alerts.length){box.innerHTML='<div class="panel empty">'+(simulate?'No alerts right now. Demo readings are within the configured ranges.':'No alerts because no valid actual sensor readings have been received.')+'</div>';return}box.innerHTML=alerts.map(a=>`<div class="alert ${a.type}"><h4>${a.title} <span class="subtle" style="float:right">${a.time}</span></h4><p>${a.message}</p></div>`).join('')}
+function render(){
+  $('pondHeading').textContent=$('pondName').value.trim()||'Hatchery 1';
+  $('phRangeText').textContent=`${Number(ranges.phMin).toFixed(1)}–${Number(ranges.phMax).toFixed(1)}`;$('ammRangeText').textContent=`${Number(ranges.ammMax).toFixed(2)} mg/L`;$('tempRangeText').textContent=`${ranges.tempMin}–${ranges.tempMax} °C`;
+  $('connectionText').textContent=simulate?'Demo mode · simulated':(actualReadingAvailable?'Firebase · live readings':'Not connected');$('connectionDot').style.background=simulate?'#43e58e':'#fbbf24';
+  $('deviceStatusTitle').textContent=simulate?'Demo device active':(actualReadingAvailable?'ESP32 data received':'Not connected');$('deviceStatusDetail').textContent=simulate?'Simulated values only; no ESP32 connection':(actualReadingAvailable?'Live readings from Firebase':'Waiting for an ESP32 data connection');
+  $('modeNotice').innerHTML=simulate?'<b>Demo Mode:</b> These are simulated readings for testing only. They are not measurements from a real pond or sensor.':'<b>Actual Mode:</b> Live readings appear only when valid sensor data is received from Firebase. Simulated readings are not used in Actual Mode.';
+  $('historyModeLabel').textContent=simulate?'Simulated data':(actualReadingAvailable?'Live Firebase data':'No data yet');
+  const valid=(simulate||actualReadingAvailable)&&[readings.ph,readings.amm,readings.temp].every(v=>Number.isFinite(Number(v)));
+  if(!valid){['phValue','ammValue','tempValue'].forEach(id=>$(id).textContent='—');status('phStatus','warn','Waiting');status('ammStatus','warn','Waiting');status('tempStatus','warn','Waiting');$('overallText').textContent='Waiting for valid sensor data';$('overallText').style.color='#945e00';$('lastUpdated').textContent='No sensor data received';['phMarker','ammMarker','tempMarker'].forEach(id=>$(id).style.display='none');$('histPh').textContent='—';$('histAmm').textContent='—';$('histTemp').textContent='—';renderCharts();renderAlerts();return;}
+  ['phMarker','ammMarker','tempMarker'].forEach(id=>$(id).style.display='block');
+  const phBad=readings.ph<ranges.phMin||readings.ph>ranges.phMax,ammBad=readings.amm>ranges.ammMax,tempBad=readings.temp<ranges.tempMin||readings.temp>ranges.tempMax;
+  status('phStatus',phBad?'bad':'ok');status('ammStatus',ammBad?'bad':'ok');status('tempStatus',tempBad?'bad':'ok');
+  $('phValue').textContent=Number(readings.ph).toFixed(1);$('ammValue').textContent=Number(readings.amm).toFixed(2);$('tempValue').textContent=Number(readings.temp).toFixed(1);
+  $('overallText').textContent=(phBad||ammBad||tempBad)?'Needs attention':(simulate?'Demo readings look normal':'Water quality looks normal');$('overallText').style.color=(phBad||ammBad||tempBad)?'#b77905':'#16a765';
+  $('phMarker').style.left=Math.max(0,Math.min(100,readings.ph/14*100))+'%';$('ammMarker').style.left=Math.max(0,Math.min(100,readings.amm/Math.max(ranges.ammMax*2,.1)*100))+'%';$('tempMarker').style.left=Math.max(0,Math.min(100,(readings.temp-15)/25*100))+'%';
+  $('histPh').textContent=Number(readings.ph).toFixed(1);$('histAmm').textContent=Number(readings.amm).toFixed(2)+' mg/L';$('histTemp').textContent=Number(readings.temp).toFixed(1)+' °C';$('lastUpdated').textContent=(simulate?'Demo updated ':'Updated ')+(lastUpdated||new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit',second:'2-digit'}));
+  if(phBad||ammBad||tempBad){let key=[phBad?'pH outside configured range':'',ammBad?'Ammonia above configured maximum':'',tempBad?'Temperature outside configured range':''].filter(Boolean).join('; ');if(!alerts.length||alerts[0].message!==key)alerts.unshift({type:'warning',title:(simulate?'Demo readings need attention':'Hatchery 1 needs attention'),message:key,time:new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})})}
+  renderCharts();renderAlerts();
+}
+function addDemoSample(){readings.ph=Number((7.2+Math.random()*.4).toFixed(1));readings.amm=Number((.1+Math.random()*.08).toFixed(2));readings.temp=Number((27.2+Math.random()*1.1).toFixed(1));lastUpdated=new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit',second:'2-digit'});for(const k of Object.keys(history)){history[k].push(readings[k]);if(history[k].length>12)history[k].shift();}saveState();render();}
+document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x===b));document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id===b.dataset.page));if(b.dataset.page==='history')renderCharts()}));
+$('simulate').addEventListener('change',e=>{simulate=e.target.checked;if(simulate&&!Number.isFinite(readings.ph))addDemoSample();saveState();render()});
+$('saveSettings').addEventListener('click',()=>{ranges={phMin:Number($('phMin').value),phMax:Number($('phMax').value),ammMax:Number($('ammMax').value),tempMin:Number($('tempMin').value),tempMax:Number($('tempMax').value)};$('pondHeading').textContent=$('pondName').value.trim()||'Hatchery 1';saveState();$('saveMessage').textContent='Saved on this device';render()});
+$('applyReadings').addEventListener('click',()=>{simulate=true;$('simulate').checked=true;readings={ph:Number($('testPh').value),amm:Number($('testAmm').value),temp:Number($('testTemp').value)};lastUpdated=new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit',second:'2-digit'});for(const k of Object.keys(history)){history[k].push(readings[k]);if(history[k].length>12)history[k].shift();}saveState();render();document.querySelector('[data-page="home"]').click()});
+$('clearAlerts').addEventListener('click',()=>{alerts=[];renderAlerts()});
+loadState();render();if(simulate&&readings.ph===null)addDemoSample();setInterval(()=>{if(!simulate)return;readings.ph=Math.max(5.5,Math.min(9.5,readings.ph+(Math.random()-.5)*.16));readings.amm=Math.max(0,readings.amm+(Math.random()-.5)*.025);readings.temp=Math.max(22,Math.min(36,readings.temp+(Math.random()-.5)*.35));lastUpdated=new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit',second:'2-digit'});for(const k of Object.keys(history)){history[k].push(readings[k]);if(history[k].length>12)history[k].shift();}saveState();render()},4000);
+</script>
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => navigator.serviceWorker.register("./sw.js").catch(() => {}));
+}
+</script>
+</body></html>
